@@ -127,6 +127,30 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
+# GENERAL
+.idea
+.vscode
+__pycache__
+node_modules/
+pip-wheel-metadata/
+# Frontend
+.next/
+.nuxt/
+.turbo/
+.parcel-cache/
+out/
+.eslintcache
+# SQl lite
+*.db
+*.sqlite3-shm
+*.sqlite3-wal
+# cashe
+*.bak
+*.swp
+*.swo
+*~
+
+
 # Environments
 .env
 .venv
