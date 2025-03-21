@@ -1,0 +1,22 @@
+.create-quiz-container {
+  margin: 50px 50px;
+}
+
+.create-quiz-title {
+  margin: 30px;
+}
+
+.form-item {
+  margin-bottom: 10px;
+}
+
+.questions-block {
+  display: flex;
+}
+
+.question-item {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+}
