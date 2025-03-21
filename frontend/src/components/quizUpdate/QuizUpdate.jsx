@@ -21,13 +21,13 @@ const QuizUpdate = () => {
         setName(res.data.name);
         setDescription(res.data.description);
         setQuestions(
-          res.data.questions.map((q, index) => ({
-            id: q.id || Date.now() + index, // if there is no id, we generate a unique one
+          res.data.questions.map((q) => ({
+            id: q.id, // Используем id из БД, если есть
             question: q.question,
             type: q.question_type,
             options:
               q.options.map((opt) =>
-                typeof opt === "object" ? opt.text : opt
+                typeof opt === "object" ? { id: opt.id, text: opt.text } : { id: null, text: opt }
               ) || [],
           }))
         );
@@ -40,9 +40,9 @@ const QuizUpdate = () => {
   }, [QuizId]);
 
   const addQuestion = () => {
-    setQuestions([
-      ...questions,
-      { id: Date.now(), question: "", type: "text", options: [] },
+    setQuestions((prev) => [
+      ...prev,
+      { id: `temp-${Date.now()}`, question: "", type: "text", options: [] },
     ]);
   };
 
@@ -54,7 +54,7 @@ const QuizUpdate = () => {
 
   const addOption = (id) => {
     setQuestions((prev) =>
-      prev.map((q) => (q.id === id ? { ...q, options: [...q.options, ""] } : q))
+      prev.map((q) => (q.id === id ? { ...q, options: [...q.options, { id: null, text: "" }] } : q))
     );
   };
 
@@ -65,11 +65,7 @@ const QuizUpdate = () => {
           ? {
               ...q,
               options: q.options.map((opt, i) =>
-                i === index
-                  ? typeof opt === "object"
-                    ? { ...opt, text: value }
-                    : value
-                  : opt
+                i === index ? { ...opt, text: value } : opt
               ),
             }
           : q
@@ -85,18 +81,14 @@ const QuizUpdate = () => {
     event.preventDefault();
 
     const formattedQuestions = questions.map((q, index) => ({
-      id: q.id > 0 ? q.id : undefined, // Send the id only if it exists
+      id: q.id.toString().startsWith("temp-") ? undefined : q.id, // Исключаем временные ID
       question: q.question,
       question_type: q.type,
       order: index + 1,
       options:
         q.type !== "text"
-          ? q.options.map((opt) =>
-              typeof opt === "string"
-                ? { id: null, text: opt } // Add id: null for new variants
-                : { id: opt.id, text: opt.text }
-            )
-          : [], // Exclude options for text questions
+          ? q.options.map((opt) => ({ id: opt.id, text: opt.text }))
+          : [],
     }));
 
     console.log("Отправляемые данные:", {
@@ -150,91 +142,48 @@ const QuizUpdate = () => {
                   />
                 </div>
                 {questions.map((q) => (
-                  <div
-                    key={q.id}
-                    style={{
-                      marginBottom: "20px",
-                      border: "1px solid #ddd",
-                      padding: "10px",
-                      borderRadius: "5px",
-                    }}
-                  >
+                  <div key={q.id} className="question-block">
                     <TextField
                       label="Question"
                       value={q.question}
-                      sx={{ marginBottom: "10px" }}
-                      onChange={(e) =>
-                        updateQuestion(q.id, "question", e.target.value)
-                      }
+                      onChange={(e) => updateQuestion(q.id, "question", e.target.value)}
                       fullWidth
                     />
-
                     <Select
                       value={q.type}
-                      sx={{ marginBottom: "10px" }}
-                      onChange={(e) =>
-                        updateQuestion(q.id, "type", e.target.value)
-                      }
+                      onChange={(e) => updateQuestion(q.id, "type", e.target.value)}
                       fullWidth
                     >
                       <MenuItem value="text">Text</MenuItem>
                       <MenuItem value="single">Single Choice</MenuItem>
                       <MenuItem value="multiple">Multiple Choices</MenuItem>
                     </Select>
-
                     {q.type !== "text" && (
                       <>
                         {q.options.map((opt, index) => (
-                          <div
-                            key={index}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginBottom: "10px",
-                            }}
-                          >
+                          <div key={index} className="option-block">
                             <TextField
                               label={`Option ${index + 1}`}
-                              value={
-                                typeof opt === "object" ? opt.text || "" : opt
-                              }
-                              onChange={(e) =>
-                                updateOption(q.id, index, e.target.value)
-                              }
+                              value={opt.text}
+                              onChange={(e) => updateOption(q.id, index, e.target.value)}
                               fullWidth
                             />
-                            <IconButton
-                              onClick={() =>
-                                updateQuestion(
-                                  q.id,
-                                  "options",
-                                  q.options.filter((_, i) => i !== index)
-                                )
-                              }
-                            >
+                            <IconButton onClick={() => updateQuestion(q.id, "options", q.options.filter((_, i) => i !== index))}>
                               <Delete />
                             </IconButton>
                           </div>
                         ))}
-                        <Button onClick={() => addOption(q.id)}>
-                          Add Option
-                        </Button>
+                        <Button onClick={() => addOption(q.id)}>Add Option</Button>
                       </>
                     )}
-
                     <IconButton onClick={() => removeQuestion(q.id)}>
                       <Delete />
                     </IconButton>
                   </div>
                 ))}
-
-                <Button onClick={addQuestion} startIcon={<Add />}>
-                  Add Question
-                </Button>
+                <Button onClick={addQuestion} startIcon={<Add />}>Add Question</Button>
               </div>
-              <Button variant="contained" type="submit" sx={{ width: "30%" }}>
-                Update
-              </Button>
+              <Button variant="contained" type="submit" sx={{ width: "30%" }}>Update</Button>
             </form>
           )}
         </div>
