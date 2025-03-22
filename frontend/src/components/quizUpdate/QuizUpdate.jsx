@@ -128,6 +128,7 @@ const QuizUpdate = () => {
                   <TextField
                     label="Questionnaire Name"
                     value={name}
+                    sx={{ marginBottom: "10px" }}
                     onChange={(e) => setName(e.target.value)}
                     fullWidth
                   />
@@ -136,6 +137,7 @@ const QuizUpdate = () => {
                   <TextField
                     label="Description"
                     value={description}
+                    sx={{ marginBottom: "10px" }}
                     onChange={(e) => setDescription(e.target.value)}
                     fullWidth
                     multiline
@@ -146,12 +148,14 @@ const QuizUpdate = () => {
                     <TextField
                       label="Question"
                       value={q.question}
+                      sx={{ marginBottom: "10px" }}
                       onChange={(e) => updateQuestion(q.id, "question", e.target.value)}
                       fullWidth
                     />
                     <Select
                       value={q.type}
                       onChange={(e) => updateQuestion(q.id, "type", e.target.value)}
+                      sx={{ marginBottom: "10px" }}
                       fullWidth
                     >
                       <MenuItem value="text">Text</MenuItem>
@@ -165,6 +169,7 @@ const QuizUpdate = () => {
                             <TextField
                               label={`Option ${index + 1}`}
                               value={opt.text}
+
                               onChange={(e) => updateOption(q.id, index, e.target.value)}
                               fullWidth
                             />
