@@ -10,6 +10,9 @@ available questionnaires. Card should consist of:​
 - amount of completions;​
 - actions: edit/run/delete (“edit” action should page similar to creation page).
 
+Link to the application:
+https://quiz-f-mgt5.onrender.com/
+
 Video how it works:
 
 https://github.com/user-attachments/assets/a849622d-6f46-4158-95f0-d6ebaf21e30c
