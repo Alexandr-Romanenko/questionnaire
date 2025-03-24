@@ -12,6 +12,8 @@ available questionnaires. Card should consist of:​
 
 Link to the application:
 https://quiz-f-mgt5.onrender.com/
+If the application does not work, run the backend https://quiz-b-kiod.onrender.com/
+
 
 Video how it works:
 
